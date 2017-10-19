@@ -39,7 +39,7 @@
 
 namespace hpl {
 
-#define GetAdress(sStr) if(sStr[0]=='#') sStr = cString::Sub(sStr,1);
+#define GetAdress(sStr) if(sStr.length()>0 && sStr[0]=='#') sStr = cString::Sub(sStr,1);
 	//////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////
@@ -1514,9 +1514,16 @@ namespace hpl {
 					else
 					{
 						cColladaNode *pGeomNode = apColladaScene->GetNodeFromSource(Geometry.msId);
-						tString sParentName = pGeomNode->pParent ? pGeomNode->pParent->msName : "[none]";
-						Warning("Geometry '%s' in node '%s' with parent '%s' has two faces using same vertices! Skipping face.\n",Geometry.msName.c_str(), pGeomNode->msName.c_str(),
+						if(pGeomNode)
+						{
+							tString sParentName = pGeomNode->pParent ? pGeomNode->pParent->msName : "[none]";
+							Warning("Geometry '%s' in node '%s' with parent '%s' has two faces using same vertices! Skipping face.\n",Geometry.msName.c_str(), pGeomNode->msName.c_str(),
 																																	sParentName.c_str());	
+						}
+						else
+						{
+							Warning("Geometry '%s' has two faces using same vertices! Skipping face. (note: the geometry node could not be found either!)\n",Geometry.msId.c_str());	
+						}
 						//Error("Geometry '%s' has two faces using same vertices! Skipping face.\n",Geometry.msName.c_str());
 					}
 				}
